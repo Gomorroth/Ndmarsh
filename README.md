@@ -11,3 +11,10 @@
 3. インスペクタからいつも通りの設定をする（**設定開始は押さない**）
 
 あとはプレイモードに入るかビルドすれば多分生成されます
+
+<br/><br/>
+
+## スペシャルサンクス
+
+- ### [Modular Marshmallow](https://bdunderscore.notion.site/Modular-Marshmallow-e44cd6adde804e0eb72da77149f60a72) (bd_さん)
+~~丸パクリ~~参考にさせていただきました。
