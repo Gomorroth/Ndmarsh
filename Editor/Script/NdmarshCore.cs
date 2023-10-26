@@ -24,6 +24,8 @@ namespace gomoru.su.Ndmarsh
             var obj = new GameObject("Non-Destructive Marshmallow PB", typeof(Ndmarsh));
             obj.transform.parent = Selection.activeGameObject.transform;
             Undo.RegisterCreatedObjectUndo(obj, "Add Non-Destructive Marshmallow PB");
+            EditorGUIUtility.PingObject(obj);
+            Selection.activeObject = obj;
         }
 
         [MenuItem(MenuPath, true, MenuPriority)]
