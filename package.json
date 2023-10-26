@@ -1,9 +1,12 @@
 {
-  "name": "example-package",
+  "name": "gomoru.su.ndmarsh",
   "version": "1.0.0",
-  "displayName": "",
-  "description": "",
-  "url" : "",
+  "displayName": "Non-Desturctive Marshmallow PB",
+  "description": "Tool for non-destructive generation of Marshmallow PB",
+  "url" : "https://github.com/Gomorroth/Ndmarsh",
   "vpmDependencies" : {
+    "com.vrchat.avatars" : ">=3.4.0",
+    "nadena.dev.modular-avatar" : "^1.8.1",
+    "nadena.dev.ndmf" : "^1.2.2"
   }
 }
