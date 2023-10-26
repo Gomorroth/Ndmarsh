@@ -13,7 +13,7 @@ namespace gomoru.su.Ndmarsh
     public sealed class NdmarshCore : Plugin<NdmarshCore>
     {
         public override string DisplayName => "Non-Desturctive Marshmallow PB";
-        public override string QualifiedName => "gomoru.su.Ndmarsh";
+        public override string QualifiedName => "gomoru.su.ndmarsh";
 
         private const string MenuPath = "GameObject/Marshmallow PB/Add Non-Destructive Marshmallow PB";
         private const int MenuPriority = 49;
