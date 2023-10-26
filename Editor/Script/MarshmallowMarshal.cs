@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -17,7 +18,8 @@ namespace gomoru.su.Ndmarsh
             _AsModularAvatarModule = CreateProperty<bool>("_modularavatar");
             _Avatar = CreateProperty<GameObject>("_avatar");
             _CopiedAvatar = CreateProperty<GameObject>("_avatar_copy");
-            _Language = CreateProperty<int>("_lang");
+            _Language = CreateProperty<int>("_lang", createSetter: false);
+            _Text = CreateProperty<List<List<string>>>("_texts", createSetter: false);
 
             _OnGUI = CreateMethod<Action<Self>>("OnGUI");
             _Localize = CreateMethod<Action<Self>>("Localize");
@@ -84,10 +86,10 @@ namespace gomoru.su.Ndmarsh
             return method.CreateDelegate<T>();
         }
 
-        private static (Action<Self, T> Setter, Func<Self, T> Getter) CreateProperty<T>(string fieldName)
+        private static (Action<Self, T> Setter, Func<Self, T> Getter) CreateProperty<T>(string fieldName, bool createSetter = true, bool createGetter = true)
         {
             var field = typeof(Self).GetField(fieldName, Private);
-            return (CreateSetter<T>(field), CreateGetter<T>(field));
+            return (createSetter ? CreateSetter<T>(field) : null, createGetter ? CreateGetter<T>(field) : null);
         }
 
         private static Action<Self, T> CreateSetter<T>(FieldInfo field)
@@ -117,6 +119,7 @@ namespace gomoru.su.Ndmarsh
         private static (Action<Self, GameObject> Setter, Func<Self, GameObject> Getter) _Avatar;
         private static (Action<Self, GameObject> Setter, Func<Self, GameObject> Getter) _CopiedAvatar;
         private static (Action<Self, int> Setter, Func<Self, int> Getter) _Language;
+        private static (Action<Self, List<List<string>>> Setter, Func<Self, List<List<string>>> Getter) _Text;
         private static Action<Self> _OnGUI;
         private static Action<Self> _Localize;
         private static Func<Self, string> _SetupWithInitialize;
@@ -148,11 +151,9 @@ namespace gomoru.su.Ndmarsh
                 set => _CopiedAvatar.Setter(@this, value);
             }
 
-            public int Language
-            {
-                get => _Language.Getter(@this);
-                set => _Language.Setter(@this, value);
-            }
+            public int Language => _Language.Getter(@this);
+
+            public List<List<string>> Text => _Text.Getter(@this);
 
             public void OnGUI() => _OnGUI(@this);
             public void Localize() => _Localize(@this);
