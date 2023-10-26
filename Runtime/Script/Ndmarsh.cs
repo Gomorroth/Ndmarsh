@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,6 +11,7 @@ namespace gomoru.su.Ndmarsh
 {
     [DisallowMultipleComponent]
     [ExecuteInEditMode]
+    [AddComponentMenu("Marshmallow PB/Non-Destructive Marshmallow PB")]
     public sealed class Ndmarsh : MonoBehaviour, IEditorOnly
     {
         [Alias("_avatar")]
@@ -79,7 +81,7 @@ namespace gomoru.su.Ndmarsh
         [Alias("_PhysBone_Collision_Radius")]
         public float PhysBoneCollisionRadius;
 
-        public void Awake()
+        public void Start()
         {
             var avatar = GetComponentInParent<VRCAvatarDescriptor>();
             if (avatar == null)

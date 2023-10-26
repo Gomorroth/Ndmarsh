@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEditor;
 using UnityEngine;
-using wataameya;
 using Self = wataameya.marshmallow_PB_Setup;
 
 namespace gomoru.su.Ndmarsh
@@ -20,21 +17,20 @@ namespace gomoru.su.Ndmarsh
             _AsModularAvatarModule = CreateProperty<bool>("_modularavatar");
             _Avatar = CreateProperty<GameObject>("_avatar");
             _CopiedAvatar = CreateProperty<GameObject>("_avatar_copy");
+            _Language = CreateProperty<int>("_lang");
 
             _OnGUI = CreateMethod<Action<Self>>("OnGUI");
             _Localize = CreateMethod<Action<Self>>("Localize");
 
 
+            _SetupWithInitialize = CreateMethod<Func<Self, string>>("SetupWithInitialize", il =>
             {
-                var method = new DynamicMethod("SetupWithInitialize", typeof(string), new[] { typeof(Self) }, typeof(Self), true);
-                var il = method.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Callvirt, typeof(Self).GetMethod("Initialize", Private));
                 il.Emit(OpCodes.Callvirt, typeof(Self).GetMethod("Setup", Private));
                 il.Emit(OpCodes.Ret);
-                _SetupWithInitialize = method.CreateDelegate<Func<Self, string>>();
-            }
+            });
 
             {
                 var types = DelegateInfoCache<ParameterIODelegate>.ArgumentTypes;
@@ -68,14 +64,23 @@ namespace gomoru.su.Ndmarsh
 
         private static T CreateMethod<T>(string methodName) where T : Delegate
         {
+            return CreateMethod<T>(methodName, il =>
+            {
+                for (int i = 0; i < DelegateInfoCache<T>.ArgumentTypes.Length; i++)
+                {
+                    il.Ldarg(i);
+                }
+                il.Emit(OpCodes.Callvirt, typeof(Self).GetMethod(methodName, Private));
+                il.Emit(OpCodes.Ret);
+            });
+        }
+
+        private static T CreateMethod<T>(string methodName, Action<ILGenerator> generate) where T : Delegate
+        {
             var method = new DynamicMethod(methodName, DelegateInfoCache<T>.ReturnType, DelegateInfoCache<T>.ArgumentTypes, typeof(Self), true);
             var il = method.GetILGenerator();
-            for(int i = 0; i < DelegateInfoCache<T>.ArgumentTypes.Length; i++)
-            {
-                il.Ldarg(i);
-            }
-            il.Emit(OpCodes.Callvirt, typeof(Self).GetMethod(methodName, Private));
-            il.Emit(OpCodes.Ret);
+            generate(il);
+
             return method.CreateDelegate<T>();
         }
 
@@ -95,6 +100,7 @@ namespace gomoru.su.Ndmarsh
             il.Emit(OpCodes.Ret);
             return method.CreateDelegate<Action<Self, T>>();
         }
+
         private static Func<Self, T> CreateGetter<T>(FieldInfo field)
         {
             var method = new DynamicMethod($"get{field.Name}", typeof(T), new[] { typeof(Self) }, typeof(Self), true);
@@ -110,6 +116,7 @@ namespace gomoru.su.Ndmarsh
         private static (Action<Self, bool> Setter, Func<Self, bool> Getter) _AsModularAvatarModule;
         private static (Action<Self, GameObject> Setter, Func<Self, GameObject> Getter) _Avatar;
         private static (Action<Self, GameObject> Setter, Func<Self, GameObject> Getter) _CopiedAvatar;
+        private static (Action<Self, int> Setter, Func<Self, int> Getter) _Language;
         private static Action<Self> _OnGUI;
         private static Action<Self> _Localize;
         private static Func<Self, string> _SetupWithInitialize;
@@ -139,6 +146,12 @@ namespace gomoru.su.Ndmarsh
             {
                 get => _CopiedAvatar.Getter(@this);
                 set => _CopiedAvatar.Setter(@this, value);
+            }
+
+            public int Language
+            {
+                get => _Language.Getter(@this);
+                set => _Language.Setter(@this, value);
             }
 
             public void OnGUI() => _OnGUI(@this);

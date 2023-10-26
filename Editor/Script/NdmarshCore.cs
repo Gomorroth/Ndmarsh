@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 using wataameya;
 
 [assembly: ExportsPlugin(typeof(gomoru.su.Ndmarsh.NdmarshCore))]
@@ -13,6 +14,25 @@ namespace gomoru.su.Ndmarsh
     {
         public override string DisplayName => "Ndmarsh";
         public override string QualifiedName => "gomoru.su.Ndmarsh";
+
+        private const string MenuPath = "GameObject/Marshmallow PB/Add Non-Destructive Marshmallow PB";
+        private const int MenuPriority = 49;
+
+        [MenuItem(MenuPath, false, MenuPriority)]
+        public static void ApplyToAvatar()
+        {
+            var obj = new GameObject("Non-Destructive Marshmallow PB", typeof(Ndmarsh));
+            obj.transform.parent = Selection.activeGameObject.transform;
+            Undo.RegisterCreatedObjectUndo(obj, "Add Non-Destructive Marshmallow PB");
+        }
+
+        [MenuItem(MenuPath, true, MenuPriority)]
+        public static bool Validate()
+        {
+            return 
+                Selection.activeGameObject?.GetComponent<VRCAvatarDescriptor>() != null &&
+                Selection.activeGameObject?.GetComponentInChildren<Ndmarsh>(true) == null;
+        }
 
         protected override void Configure() => InPhase(BuildPhase.Generating).Run("Generate Marshmallow PB", Generate);
 
