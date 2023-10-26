@@ -6,6 +6,15 @@
 
 ![image](https://github.com/Gomorroth/Ndmarsh/assets/70315656/70d23a17-a875-4a7e-83f4-0bbfd364806a)
 
+## 依存関係
+| パッケージ | バージョン |
+| ---- | ---- |
+| VRCSDK | 3.4.0以上 |
+| Modular Avatar | 1.8.1以上 |
+| NDMF | 1.1.0以上 |
+| ましゅまろPB | 1.6.3以上<br/>バージョン上がると多分壊れます |
+
+
 ## 使い方
 1. アバターのオブジェクトを右クリック
 2. コンテキストメニューの`Marshmallow PB` → `Add Non-Desturctive Marshmallow PB`をクリック
